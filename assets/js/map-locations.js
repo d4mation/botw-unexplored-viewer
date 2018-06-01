@@ -1,3 +1,4 @@
+// Generated with https://github.com/d4mation/botw-waypoint-map/
 var locations = {
 0xbd432e2b: {"internal_name":"Location_AdeyaVillage", "display_name":"Deya Village Ruins", "x":353.034, "y":1953.3},
 0x4c2a4c64: {"internal_name":"Location_AkkareBigBridge", "display_name":"Akkala Span", "x":3008.48, "y":-1242.92},
