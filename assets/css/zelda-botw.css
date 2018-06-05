@@ -628,9 +628,9 @@ button.no-text.with-icon:before{margin-right:0px}
 
 #map-container .waypoint {
 	position: absolute;
-	background: cyan;
-	border: 1px solid blue;
-	color: blue;
+	background: orange;
+	border: 1px solid red;
+	color: red;
 	width: 10px;
 	height: 10px;
 	font-size: 0;
@@ -646,8 +646,26 @@ button.no-text.with-icon:before{margin-right:0px}
 
 }
 
+#map-container .waypoint.warp {
+
+	background: cyan;
+	border: 1px solid blue;
+	color: blue;
+	border-radius: 0;
+	transform: rotate(45deg);
+
+}
+
 #map-container .waypoint:hover {
 	cursor: pointer;
+}
+
+#map-container .waypoint:hover:after {
+	content: attr(data-display_name);
+	display: inline-block;
+	position: relative;
+	background: inherit;
+	border: inherit;
 	width: auto;
 	height: auto;
 	font-size: initial;
@@ -655,4 +673,9 @@ button.no-text.with-icon:before{margin-right:0px}
 	border-radius: 0%;
 	white-space: nowrap;
 	padding: 0px 2px 0px 2px;
+}
+
+#map-container .waypoint.warp:hover:after {
+	transform: rotate(-45deg);
+	transform-origin: 0;
 }

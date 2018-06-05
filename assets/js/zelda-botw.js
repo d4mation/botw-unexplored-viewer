@@ -107,9 +107,11 @@ SavegameEditor={
 		window.localStorage.setItem( 'botw-unexplored-viewer', JSON.stringify( locationValues ) );
 
 		setValue( 'span-number-locations', locationValues.found.locations );
+		setValue( 'span-number-total-locations', Object.keys( locations ).length );
 
 		this.markMap( locationValues.notFound.koroks, 'korok' );
 		this.markMap( locationValues.notFound.locations, 'location' );
+		this.markMap( warps, 'warp' );
 
 		addWaypointListeners();
 
@@ -167,7 +169,7 @@ SavegameEditor={
 			waypoint.classList.add( className );
 			waypoint.setAttribute( 'style', 'left: ' + ( 3000 + mapObjects[ internal_name ].x / 2 ) + 'px' + '; top: ' + ( 2500 + mapObjects[ internal_name ].y / 2 ) + 'px' );
 			waypoint.id = internal_name;
-			waypoint.innerHTML = mapObjects[ internal_name ].display_name;
+			waypoint.setAttribute( 'data-display_name', mapObjects[ internal_name ].display_name );
 
 			map.appendChild( waypoint );
 
@@ -203,9 +205,12 @@ window.addEventListener('load',function(){
 
 		setValue( 'span-number-koroks', locationValues.found.koroks );
 		setValue( 'span-number-locations', locationValues.found.locations );
+		setValue( 'span-number-total-locations', Object.keys( locations ).length );
 
 		SavegameEditor.markMap( locationValues.notFound.koroks, 'korok' );
 		SavegameEditor.markMap( locationValues.notFound.locations, 'location' );
+
+		SavegameEditor.markMap( warps, 'warp' );
 
 		hide('dragzone');
 		show('the-editor');
@@ -254,9 +259,12 @@ window.addEventListener('load',function(){
 
 		setValue( 'span-number-koroks', locationValues.found.koroks );
 		setValue( 'span-number-locations', locationValues.found.locations );
+		setValue( 'span-number-total-locations', Object.keys( locations ).length );
 
 		SavegameEditor.markMap( locationValues.notFound.koroks, 'korok' );
 		SavegameEditor.markMap( locationValues.notFound.locations, 'location' );
+
+		SavegameEditor.markMap( warps, 'warp' );
 
 		hide('dragzone');
 		show('the-editor');
@@ -271,7 +279,7 @@ window.addEventListener('load',function(){
 // Add event Listeners for Waypoints
 function addWaypointListeners() {
 
-	[].forEach.call( document.querySelectorAll( '.waypoint' ), function( element ) {
+	[].forEach.call( document.querySelectorAll( '.waypoint:not(.warp)' ), function( element ) {
 		element.addEventListener( 'click', function() {
 			removeWaypoint( element );
 		} );
