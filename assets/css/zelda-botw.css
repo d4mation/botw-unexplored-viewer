@@ -653,6 +653,7 @@ button.no-text.with-icon:before{margin-right:0px}
 	color: blue;
 	border-radius: 0;
 	transform: translate(-2px,0px) rotate(45deg);
+	transform-origin: top right;
 
 }
 
