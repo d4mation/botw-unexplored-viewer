@@ -173,7 +173,7 @@ button.with-icon.file-load:before{background-position:-32px -48px;width:20px;hei
 #toolbar{
 	padding:8px
 }
-
+#span-version:hover{text-decoration:underline}
 #header h1{display:none}
 #header h1 img{vertical-align:middle}
 
@@ -465,10 +465,16 @@ button.no-text.with-icon:before{margin-right:0px}
 	color:white;
 	padding:4px 16px;
 	border-radius:3px;
-	clear:both
+	clear:both;
+	position:relative;
+	top:80px;
 }
 #clear:hover{
 	background-color:#8a9eea;
+}
+#demo:hover{
+	background-color:#bbb;
+	color:#000
 }
 
 #warning{

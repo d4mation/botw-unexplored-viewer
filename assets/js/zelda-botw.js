@@ -8,66 +8,76 @@ var locationValues = {};
 SavegameEditor={
 	Name:'The legend of Zelda: Breath of the wild',
 	Filename:'game_data.sav',
-	Version:20180520,
+	Version:20190625,
 
 	/* Constants */
 	Constants:{
-		/*						 v1.0    v1.1    v1.2    v1.3    v1.3.3   v1.4     v1.5 */
-		FILESIZE:				[896976, 897160, 897112, 907824, 1020648, 1027208, 1027208],
-		HEADER:					[0x24e2, 0x24ee, 0x2588, 0x29c0, 0x3ef8,  0x471a,  0x471b],
-		VERSION:				['v1.0', 'v1.1', 'v1.2', 'v1.3', 'v1.3.3','v1.4',  'v1.5'],
+		MAX_ITEMS:410,
+		STRING_SIZE:0x80,
+
+		//missing versions: 1.1.1, 1.1.2 and 1.4.1
+		VERSION:				['v1.0', 'v1.1', 'v1.2', 'v1.3', 'v1.3.1', 'Kiosk', 'v1.3.3','v1.3.4', 'v1.4',  'v1.5',  'v1.6',  'v1.6*', 'v1.6**','v1.6***'],
+		FILESIZE:				[896976, 897160, 897112, 907824, 907824,  916576,  1020648, 1020648,   1027208, 1027208, 1027216, 1027216, 1027216, 1027216],
+		HEADER:					[0x24e2, 0x24ee, 0x2588, 0x29c0, 0x2a46,  0x2f8e,  0x3ef8,  0x3ef9,    0x471a,  0x471b,  0x471e, 0x0f423d, 0x0f423e,0x0f423f],
+
+		MAP_ICONS: 0x9383490e,
+		MAP_POS: 0xea9def3f,
+		ICON_TYPES:{SWORD: 27, BOW:28, SHIELD:29, POT:30, STAR:31, CHEST:32,SKULL:33,LEAF:34,TOWER:35}
 	},
 
 	/* Offsets */
-	OffsetsAll:{
-		/*						 hash        v1.0      v1.1      v1.2      v1.3      v1.3.3    v1.4      v1.5 */
-		KOROK_SEED_COUNTER:		[0x8a94e07a, 0x076148, 0x0761f8, 0x0761e0, 0x0778f8, 0x083b60, 0x084908, 0x084908],
-	},
+	Hashes:[
+		0x8a94e07a, 'KOROK_SEED_COUNTER',			
+	],
 
 
 	/* private functions */
 
 	_searchHash:function(hash){
 		for(var i=0x0c; i<tempFile.fileSize; i+=8)
-			if(hash===tempFile.readInt(i))
+			if(hash===tempFile.readU32(i))
 				return i;
 		return false;
 	},
 
-	_getOffsets(v){
-		this.Offsets={};
-		if(v<this.OffsetsAll.KOROK_SEED_COUNTER.length){
-			for(prop in this.OffsetsAll){
-				this.Offsets[prop]=this.OffsetsAll[prop][v+1];
-			}
-		}else{ /* unknown version */
-			var textarea=document.createElement('textarea');
-			for(prop in this.OffsetsAll){
-				var offset=this._searchHash(this.OffsetsAll[prop][0]);
-				if(offset){
-					textarea.value+=prop+':0x'+(offset+4).toString(16)+',\n';
-					this.Offsets[prop]=offset+4;
-				}
-			}
-			document.body.appendChild(textarea);
-		}
+	_readFromHash:function(hash){
+		var offset=this._searchHash(hash);
+		if(typeof offset === 'number')
+			return tempFile.readU32(offset+4);
+		return false;
+	},
+	_writeValueAtHash:function(hash,val){
+		var offset=this._searchHash(hash);
+		if(typeof offset==='number')
+			this._writeValue(offset+4,val);
 	},
 
+	_getOffsets:function(v){
+		this.Offsets={};
+		var startSearchOffset=0x0c;
+		for(var i=0; i<this.Hashes.length; i+=2){
+			for(var j=startSearchOffset; j<tempFile.fileSize; j+=8){
+				if(this.Hashes[i]===tempFile.readU32(j)){
+					this.Offsets[this.Hashes[i+1]]=j+4;
+					startSearchOffset=j+8;
+					break;
+				}
+			}
+			/*if(typeof this.Offsets[this.Hashes[i+1]] === 'undefined'){
+				console.log(this.Hashes[i+1]+' not found');
+			}*/
+		}
+	},
 
 	/* check if savegame is valid */
 	_checkValidSavegameByConsole:function(switchMode){
 		var CONSOLE=switchMode?'Switch':'Wii U';
 		tempFile.littleEndian=switchMode;
 		for(var i=0; i<this.Constants.FILESIZE.length; i++){
-			var versionHash=tempFile.readInt(0);
-			if(versionHash===0x2a46) //v1.3.0 switch?
-				versionHash=0x29c0;
-			if(versionHash===0x3ef9) //v1.3.3 switch?
-				versionHash=0x3ef8;
+			var versionHash=tempFile.readU32(0);
 
-			if(tempFile.fileSize===this.Constants.FILESIZE[i] && versionHash===this.Constants.HEADER[i] && tempFile.readInt(4)===0xffffffff){
+			if(tempFile.fileSize===this.Constants.FILESIZE[i] && versionHash===this.Constants.HEADER[i] && tempFile.readU32(4)===0xffffffff){
 				this._getOffsets(i);
-				//setValue('version', this.Constants.VERSION[i]+' ('+CONSOLE+')');
 				return true;
 			}
 		}
@@ -88,7 +98,7 @@ SavegameEditor={
 		tempFile.fileName='game_data.sav';
 
 		/* prepare viewer */
-		setValue( 'span-number-koroks', tempFile.readInt( this.Offsets.KOROK_SEED_COUNTER ) );
+		setValue( 'span-number-koroks', tempFile.readU32( this.Offsets.KOROK_SEED_COUNTER ) );
 
 		locationValues.notFound = {
 			'koroks': {},
@@ -125,14 +135,14 @@ SavegameEditor={
 		var previousHashValue=0;
 		for ( var offset = 0x0c; offset < tempFile.fileSize - 4; offset += 8 ) {
 
-			var hashValue = tempFile.readInt( offset );
+			var hashValue = tempFile.readU32( offset );
 
 			if( hashValue === previousHashValue )
 				continue;
 
 			if ( hashObjects[ hashValue ] ) {
 
-				if ( ! tempFile.readInt( offset + 4 ) ) {
+				if ( ! tempFile.readU32( offset + 4 ) ) {
 
 					locationValues.notFound[ key ][ hashObjects[ hashValue ]['internal_name'] ] = {
 						display_name: hashObjects[ hashValue ]['display_name'],
