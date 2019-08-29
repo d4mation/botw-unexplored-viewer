@@ -119,9 +119,11 @@ SavegameEditor={
 		setValue( 'span-number-locations', locationValues.found.locations );
 		setValue( 'span-number-total-locations', Object.keys( locations ).length );
 
-		this.markMap( locationValues.notFound.koroks, 'korok' );
+		this.drawKorokPaths( locationValues.notFound.koroks );
+
 		this.markMap( locationValues.notFound.locations, 'location' );
 		this.markMap( warps, 'warp' );
+		this.markMap( locationValues.notFound.koroks, 'korok' );
 
 		addWaypointListeners();
 
@@ -272,10 +274,9 @@ window.addEventListener('load',function(){
 
 		SavegameEditor.drawKorokPaths( locationValues.notFound.koroks );
 
-		SavegameEditor.markMap( locationValues.notFound.koroks, 'korok' );
 		SavegameEditor.markMap( locationValues.notFound.locations, 'location' );
-
 		SavegameEditor.markMap( warps, 'warp' );
+		SavegameEditor.markMap( locationValues.notFound.koroks, 'korok' );
 
 		hide('dragzone');
 		show('the-editor');
@@ -328,10 +329,9 @@ window.addEventListener('load',function(){
 
 		SavegameEditor.drawKorokPaths( locationValues.notFound.koroks );
 
-		SavegameEditor.markMap( locationValues.notFound.koroks, 'korok' );
 		SavegameEditor.markMap( locationValues.notFound.locations, 'location' );
-
 		SavegameEditor.markMap( warps, 'warp' );
+		SavegameEditor.markMap( locationValues.notFound.koroks, 'korok' );
 
 		hide('dragzone');
 		show('the-editor');
