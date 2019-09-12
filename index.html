@@ -51,6 +51,14 @@
 
 	<div id="map-container">
 		<img src='./assets/images/BotW-Map.png'/>
+		<svg id="path-svg" height="5000" width="6000">
+				<defs>
+				<marker id="arrow" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto" markerUnits="strokeWidth" viewBox="0 0 20 20">
+					<path d="M0,0 L0,6 L9,3 Z" fill="lime" stroke="green" stroke-width="1" />
+				</marker>
+				</defs>
+			<g id="path-group" fill="none" stroke="#ffffff" stroke-width="3" marker-start="url(#arrow)""></g>
+		</svg>
 	</div>
 	
 </div>

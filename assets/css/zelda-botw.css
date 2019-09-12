@@ -686,3 +686,22 @@ button.no-text.with-icon:before{margin-right:0px}
 	transform: rotate(-45deg);
 	transform-origin: 0;
 }
+
+#map-container {
+	width: 6000px; /* Size of image */
+	height: 5000px;
+}
+
+#map-container img {
+	position: relative;
+}
+
+#path-svg {
+	width: 6000px !important;
+	height: 5000px !important;
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+}

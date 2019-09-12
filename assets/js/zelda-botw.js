@@ -189,54 +189,37 @@ SavegameEditor={
 
 	},
 
-	/**
-	 * Adapted from https://stackoverflow.com/a/55963590
-	 */
-	lineDraw( id, x1, y1, x2, y2 ) {
-
-		if ( x2 < x1 ) {
-			tmp = x2; x2 = x1; x1 = tmp;
-			tmp = y2; y2 = y1; y1 = tmp;
-		}
-
-		lineLength = Math.sqrt( Math.pow( x2 - x1, 2 ) + Math.pow( y2 - y1, 2 ) );
-		m = (y2 - y1) / (x2 - x1)
-
-		degree = Math.atan( m ) * 180 / Math.PI
-
-		let line = document.createElement( 'div' );
-		
-		line.className = 'line ' + id;
-		line.style.cssText = "transform-origin: top left; transform: rotate(" + degree + "deg); width: " + lineLength + "px; height: 3px; background: white; position: absolute; top: " + y1 + "px; left: " + x1 + "px;";
-
-		return line;
-
-	},
-
 	drawKorokPaths( notFoundKoroks ) {
 
-		var map = document.getElementById( 'map-container' );
+		var group = document.getElementById( 'path-group' );
 
 		for ( var internal_name in notFoundKoroks ) {
 
 			if ( typeof korokPaths[ internal_name ] == 'undefined' ) continue;
 
-			points = korokPaths[ internal_name ].points;
+			var points = korokPaths[ internal_name ].points;
+
+			var path = document.createElementNS( 'http://www.w3.org/2000/svg', 'path' ),
+				d = '';
 
 			for ( var index in points ) {
 
-				if ( index == 0 ) continue;
+				if ( index == 0 ) {
+					d = d + 'M ';
+				}
+				else {
+					d = d + ' L';
+				}
 
-				let x1 = points[ index - 1 ].x,
-					y1 = points[ index - 1 ].y,
-					x2 = points[ index ].x,
-					y2 = points[ index ].y;
-
-				let line = this.lineDraw( internal_name, ( 3000 + x1/2 ), ( 2500 + y1/2 ), ( 3000 + x2/2 ), ( 2500 + y2/2 ) );
-
-				map.appendChild( line );
+				d = d + ( 3000 + points[ index ].x/2 ) + ' ' + ( 2500 + points[ index ].y/2 );
 
 			}
+
+			path.setAttribute( 'd', d );
+
+			path.setAttribute( 'class', 'line ' + internal_name );
+
+			group.appendChild( path );
 
 		}
 
